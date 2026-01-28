@@ -63,7 +63,6 @@ const subscriptionSchema = new mongoose.Schema(
         validator: (value) => value <= new Date(),
         message: "Start date cannot be in the future",
       },
-      default: Date.now,
     },
 
     renewalDate: {

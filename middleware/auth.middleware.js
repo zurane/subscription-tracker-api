@@ -6,9 +6,9 @@ const authMiddleware = async (req, res, next) => {
   // Middleware logic for authentication
   try {
     let token;
-    if (
+    if ( 
       !req.headers.authorization ||
-      !req.headers.authorization.startsWith("Bearer ")
+      !req.headers.authorization.startsWith("Bearer") // Check for Bearer token and if not present return an unauthorized response
     ) {
       return res.status(401).json({ message: "Unauthorized" });
     }
@@ -16,13 +16,15 @@ const authMiddleware = async (req, res, next) => {
     token = req.headers.authorization.split(" ")[1]; // Get token from Bearer token
 
     if (!token) {
-      res.status(401).json({ message: "Unauthorized" });
+      return res.status(401).json({ message: "Unauthorized" });
     }
+
     const decoded = jwt.verify(token, JWT_SECRET); // Verify token
     req.user = decoded; // Attach decoded user info to request object
     const user = await User.findById(decoded.id); // Fetch full user document
     if (!user) {
-      return res.status(401).json({ message: "Unauthorized" });
+      // If user not found
+      return res.status(404).json({ message: "User not found" });
     }
     req.user = user; // Attach full user document to request object
     next();
@@ -31,7 +33,6 @@ const authMiddleware = async (req, res, next) => {
       .status(401)
       .json({ message: "Unauthorized", error: error.message });
   }
-  next();
 };
 
 export default authMiddleware;

@@ -18,7 +18,7 @@ const findUsers = async (req, res, next) => {
 const findUserById = async (req, res, next) => {
   try {
     const user = await User.findById(req.params.id).select("-password"); // Exclude password field
-    
+
     if (!user) {
       // If user not found, throw 404 error
       const error = new Error("User not found");
@@ -58,4 +58,24 @@ const updateUserById = async (req, res, next) => {
   }
 };
 
-export { findUsers, findUserById, updateUserById };
+// Controller to delete a user by ID
+const deleteUserById = async (req, res, next) => {
+  try {
+    const deleteUser = await User.findByIdAndDelete(req.params.id);
+
+    if (!deleteUser) {
+      const error = new Error("User not found");
+      error.status = 404;
+      throw error;
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "User deleted successfully",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export { findUsers, findUserById, updateUserById, deleteUserById };
