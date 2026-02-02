@@ -73,42 +73,45 @@ const subscriptionSchema = new mongoose.Schema(
         },
         message: "Renewal date must be after start date",
       },
-
-      user: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
-        required: true,
-        index: true,
-      },
+    },
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+      index: true,
     },
   },
   { timestamps: true },
 );
 
 // Auto-calculate renewalDate before validation if not provided.
-subscriptionSchema.pre("validate", function (next) {
-  if (!this.renewalDate) {
-    const freqMap = {
-      daily: 1,
-      weekly: 7,
-      monthly: 30,
-      yearly: 365,
-    };
+// subscriptionSchema.pre("validate", function (next) {
+//   try {
+//     if (!this.renewalDate) {
+//       const freqMap = {
+//         daily: 1,
+//         weekly: 7,
+//         monthly: 30,
+//         yearly: 365,
+//       };
 
-    const renewalDate = new Date(this.startDate);
-    renewalDate.setDate(
-      renewalDate.getDate() + freqMap[this.subscriptionFrequency],
-    );
+//       const renewalDate = new Date(this.startDate);
+//       renewalDate.setDate(
+//         renewalDate.getDate() + freqMap[this.subscriptionFrequency]
+//       );
 
-    this.renewalDate = renewalDate;
-  }
+//       this.renewalDate = renewalDate;
+//     }
 
-  if (this.renewalDate <= new Date()) {
-    this.status = "inactive";
-  }
+//     if (this.renewalDate <= new Date()) {
+//       this.status = "inactive";
+//     }
 
-  next();
-});
+//     next();
+//   } catch (error) {
+//     next(error);
+//   }
+// });
 
 const Subscription = mongoose.model("Subscription", subscriptionSchema);
 

@@ -111,10 +111,7 @@ const signOut = async (req, res, next) => {
   }
 };
 
-// {
-//   "name": "Mpho Lebona",
-//   "email": "giftedmpho99@gmail.com",
-//   "password": "somepasswordrandomlygenerated"
-// }
+
 
 export { signUp, signIn, signOut };
+

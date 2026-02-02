@@ -6,17 +6,17 @@ const authMiddleware = async (req, res, next) => {
   // Middleware logic for authentication
   try {
     let token;
-    if ( 
+    if (
       !req.headers.authorization ||
       !req.headers.authorization.startsWith("Bearer") // Check for Bearer token and if not present return an unauthorized response
     ) {
-      return res.status(401).json({ message: "Unauthorized" });
+      return res.status(401).json({ message: "Unauthorized. Please sign in to continue." });
     }
 
     token = req.headers.authorization.split(" ")[1]; // Get token from Bearer token
 
     if (!token) {
-      return res.status(401).json({ message: "Unauthorized" });
+      return res.status(401).json({ message: "Unauthorized. Please sign in to continue." });
     }
 
     const decoded = jwt.verify(token, JWT_SECRET); // Verify token
@@ -27,7 +27,7 @@ const authMiddleware = async (req, res, next) => {
       return res.status(404).json({ message: "User not found" });
     }
     req.user = user; // Attach full user document to request object
-    next();
+    return next();
   } catch (error) {
     return res
       .status(401)
