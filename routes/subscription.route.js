@@ -15,16 +15,15 @@ const subscriptionRouter = Router();
 
 subscriptionRouter.post("/", authMiddleware, createSubscription);
 subscriptionRouter.get("/", authMiddleware, getAllSubscriptions);
-// Upcoming renewals for the authenticated user
-subscriptionRouter.get("/upcoming-renewals", authMiddleware, upcomingRenewals);
-// Get all subscriptions for a user
-subscriptionRouter.get("/user/:id", authMiddleware, getSubscriptionsByUser);
-// Get a single subscription by subscription ID
-subscriptionRouter.get("/:id", authMiddleware, getSubscriptionById);
 
-subscriptionRouter.put("/:id", authMiddleware, updateById);
+// More specific routes BEFORE generic /:id routes
+subscriptionRouter.get("/upcoming-renewals", authMiddleware, upcomingRenewals);
+subscriptionRouter.get("/user/:id", authMiddleware, getSubscriptionsByUser);
 subscriptionRouter.put("/cancel/:id", authMiddleware, cancelSubscription);
 
+// Generic routes LAST
+subscriptionRouter.get("/:id", authMiddleware, getSubscriptionById);
+subscriptionRouter.put("/:id", authMiddleware, updateById);
 subscriptionRouter.delete("/:id", authMiddleware, deleteById);
 
 export default subscriptionRouter;

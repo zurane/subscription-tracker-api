@@ -1,4 +1,7 @@
+import { SERVER } from "../config/env.js";
+import workflowClient from "../config/upstash.js";
 import Subscription from "../models/subscription.model.js";
+
 
 const createSubscription = async (req, res, next) => {
   try {
@@ -31,17 +34,28 @@ const createSubscription = async (req, res, next) => {
       user: userId,
     });
 
+    const { workflowRunId } = await workflowClient.trigger({
+      url: `${SERVER}/api/v1/workflows/subscriptions/reminder`,
+      body: {
+        subscriptionId: subscription.id,
+      },
+      headers: {
+        'content-type': 'application/json',
+      },
+      retries: 0,
+    })
+
     res.status(201).json({
       message: "Subscription created successfully",
       success: true,
-      data: subscription,
+      data: { subscription, workflowRunId }
     });
+
     next();
   } catch (error) {
     console.error("createSubscription error:", error.stack || error);
   }
 };
-
 // Controller to get all subscriptions
 const getAllSubscriptions = async (req, res) => {
   try {
@@ -51,7 +65,6 @@ const getAllSubscriptions = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
-
 // Controller to get a single subscription by subscription ID
 const getSubscriptionById = async (req, res, next) => {
   try {
@@ -104,6 +117,20 @@ const updateById = async (req, res, next) => {
     if (!id) {
       throw new Error("Subscription ID is required");
     }
+
+    // Check subscription exists and user owns it
+    const subscription = await Subscription.findById(id);
+    if (!subscription) {
+      const error = new Error("Subscription not found");
+      error.status = 404;
+      throw error;
+    }
+    if (!subscription.user.equals(req.user._id)) {
+      const error = new Error("You are not authorized to update this subscription");
+      error.status = 403;
+      throw error;
+    }
+
     const updateSubscription = await Subscription.findByIdAndUpdate(
       id,
       req.body,
@@ -112,7 +139,6 @@ const updateById = async (req, res, next) => {
         runValidators: true,
       },
     );
-
     res.status(200).json({
       success: true,
       data: updateSubscription,
@@ -126,6 +152,20 @@ const updateById = async (req, res, next) => {
 const deleteById = async (req, res, next) => {
   try {
     const id = req.params.id;
+
+    // Check subscription exists and user owns it
+    const subscription = await Subscription.findById(id);
+    if (!subscription) {
+      const error = new Error("Subscription not found");
+      error.status = 404;
+      throw error;
+    }
+    if (!subscription.user.equals(req.user._id)) {
+      const error = new Error("You are not authorized to delete this subscription");
+      error.status = 403;
+      throw error;
+    }
+
     const deleteSubscription = await Subscription.findByIdAndDelete(id);
 
     res.status(200).json({
@@ -190,7 +230,7 @@ const upcomingRenewals = async (req, res, next) => {
     res.status(200).json({
       success: true,
       count: renewals.length,
-      data: renewals.length === 0? 'No upcoming renewals' : renewals, //if no renewals, send a friendly message.
+      data: renewals.length === 0 ? 'No upcoming renewals' : renewals, //if no renewals, send a friendly message.
     });
   } catch (error) {
     next(error);

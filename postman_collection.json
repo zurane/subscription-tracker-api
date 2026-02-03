@@ -1,0 +1,489 @@
+{
+  "info": {
+    "name": "Subscription Tracker API",
+    "description": "API documentation for managing user subscriptions",
+    "version": "1.0.0",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{jwt_token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:3000/api",
+      "type": "string"
+    },
+    {
+      "key": "jwt_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "subscription_id",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "user_id",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Subscriptions",
+      "item": [
+        {
+          "name": "Create Subscription",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Netflix\",\n  \"price\": 15.99,\n  \"currency\": \"USD\",\n  \"subscriptionFrequency\": \"monthly\",\n  \"category\": \"entertainment\",\n  \"paymentMethod\": \"Credit Card\",\n  \"startDate\": \"2024-01-01\",\n  \"renewalDate\": \"2024-02-01\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/subscriptions",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "subscriptions"
+              ]
+            },
+            "description": "Create a new subscription for the authenticated user"
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Subscriptions",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/subscriptions",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "subscriptions"
+              ]
+            },
+            "description": "Retrieve all subscriptions from the database"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Subscription by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/subscriptions/{{subscription_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "subscriptions",
+                "{{subscription_id}}"
+              ]
+            },
+            "description": "Get a single subscription by its ID. User must own the subscription."
+          },
+          "response": []
+        },
+        {
+          "name": "Get User's Subscriptions",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/subscriptions/user/{{user_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "subscriptions",
+                "user",
+                "{{user_id}}"
+              ]
+            },
+            "description": "Get all subscriptions for a specific user. User can only access their own subscriptions."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Upcoming Renewals",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/subscriptions/upcoming-renewals",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "subscriptions",
+                "upcoming-renewals"
+              ]
+            },
+            "description": "Get all active subscriptions with renewal dates on or after today for the authenticated user"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Subscription",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"price\": 19.99,\n  \"paymentMethod\": \"Debit Card\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/subscriptions/{{subscription_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "subscriptions",
+                "{{subscription_id}}"
+              ]
+            },
+            "description": "Update a subscription. User must own the subscription. Returns the updated subscription."
+          },
+          "response": []
+        },
+        {
+          "name": "Cancel Subscription",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{}"
+            },
+            "url": {
+              "raw": "{{base_url}}/subscriptions/cancel/{{subscription_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "subscriptions",
+                "cancel",
+                "{{subscription_id}}"
+              ]
+            },
+            "description": "Cancel a subscription by setting its status to 'canceled'. User must own the subscription."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Subscription",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/subscriptions/{{subscription_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "subscriptions",
+                "{{subscription_id}}"
+              ]
+            },
+            "description": "Permanently delete a subscription. User must own the subscription. Returns the deleted subscription."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Users",
+      "item": [
+        {
+          "name": "Sign Up",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"john@example.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/sign-up",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "sign-up"
+              ]
+            },
+            "description": "Create a new user and receive a JWT token in the response."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();",
+                  "const token = json.data && json.data.token;",
+                  "const user = json.data && json.data.user;",
+                  "const userId = user && (user._id || (Array.isArray(user) ? user[0]._id : user.id));",
+                  "if (token) pm.collectionVariables.set('jwt_token', token);",
+                  "if (userId) pm.collectionVariables.set('user_id', userId);",
+                  "pm.test('Sign up returned token', () => pm.expect(pm.response.code).to.be.oneOf([201]));"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "Sign In",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"john@example.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/sign-in",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "sign-in"
+              ]
+            },
+            "description": "Authenticate user and receive a JWT token in the response. Set the returned token to the collection variable `jwt_token`."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();",
+                  "const token = json.data && json.data.token;",
+                  "const user = json.data && json.data.user;",
+                  "const userId = user && (user._id || (Array.isArray(user) ? user[0]._id : user.id));",
+                  "if (token) pm.collectionVariables.set('jwt_token', token);",
+                  "if (userId) pm.collectionVariables.set('user_id', userId);",
+                  "pm.test('Sign in returned token', () => pm.expect(pm.response.code).to.be.oneOf([200]));"
+                ]
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "Sign Out",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/auth/sign-out",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "sign-out"
+              ]
+            },
+            "description": "Invalidate the session on the server (no direct token revocation implemented)."
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Users",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/users",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "users"
+              ]
+            },
+            "description": "Retrieve all users. This endpoint is publicly accessible in the current implementation."
+          },
+          "response": []
+        },
+        {
+          "name": "Get User by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/users/{{user_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "users",
+                "{{user_id}}"
+              ]
+            },
+            "description": "Get a single user by ID. Requires authentication. Password is excluded from the response."
+          },
+          "response": []
+        },
+        {
+          "name": "Update User",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"John Updated\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/users/{{user_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "users",
+                "{{user_id}}"
+              ]
+            },
+            "description": "Update a user by ID. In the current implementation this endpoint does not enforce ownership checks, so use carefully."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete User",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/users/{{user_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "users",
+                "{{user_id}}"
+              ]
+            },
+            "description": "Delete a user by ID. This action is permanent."
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
