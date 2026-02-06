@@ -6,6 +6,7 @@ export const {
   PORT,
   NODE_ENV,
   SERVER,
+  USER_SMTP_PASS,
   DB_URI,
   JWT_SECRET,
   JWT_EXPIRES_IN,
