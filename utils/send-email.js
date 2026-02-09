@@ -1,6 +1,7 @@
 import dayjs from "dayjs";
 import { emailTemplates } from "./email-template.js";
-import transporter, { accountMail } from "../config/mailer.js";
+import transporter from "../config/mailer.js";
+import { ADMIN_EMAIL } from "../config/env.js";
 
 const sendEmailReminder = async ({ to, type, subscription }) => {
     //check if there it to and type value otherwise throw an error
@@ -28,7 +29,7 @@ const sendEmailReminder = async ({ to, type, subscription }) => {
     const subject = template.generateSubject(mailInfo);
 
     const mailOptions = {
-        from: accountMail,
+        from: ADMIN_EMAIL,
         to: to,
         subject: subject,
         html: message,

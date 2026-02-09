@@ -7,6 +7,7 @@ export const {
   NODE_ENV,
   SERVER,
   USER_SMTP_PASS,
+  ADMIN_EMAIL,
   DB_URI,
   JWT_SECRET,
   JWT_EXPIRES_IN,

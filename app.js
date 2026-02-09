@@ -16,7 +16,7 @@ app.use(express.urlencoded({ extended: false })); // Parse URL-encoded bodies li
 app.use(cookieParser()); // Parse Cookie header and populate req.cookies with an object keyed by the cookie names.
 app.use(arcjetMiddleware); // Apply Arcjet protection to all routes
 
-app.get("/", (req, res) => {
+app.get("/", (req, res) => { // for testing
   res.send("Welcome to the susbscription tracker API application");
 });
 
