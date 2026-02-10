@@ -1,17 +1,22 @@
 import dayjs from "dayjs";
 import { emailTemplates } from "./email-template.js";
-import SibApiV3Sdk from "sib-api-v3-sdk"; // Standard package name
-import { USER_SMTP_PASS } from "../config/env.js"; // This should be your Brevo API Key (xkeysib-...)
+import SibApiV3Sdk from "sib-api-v3-sdk";
+import { USER_SMTP_PASS } from "../config/env.js";
 
-// Initialize Brevo Client
-const client = SibApiV3Sdk.ApiClient.instance;
-const apiKey = client.authentications["api-key"];
+// 1. Initialize Brevo Client
+const defaultClient = SibApiV3Sdk.ApiClient.instance;
+const apiKey = defaultClient.authentications['api-key'];
 apiKey.apiKey = USER_SMTP_PASS;
 
 const apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
 
 const sendEmailReminder = async ({ to, type, subscription }) => {
-    // 1. Validation
+    // Safety Check: Ensure Key is loaded
+    if (!USER_SMTP_PASS || !USER_SMTP_PASS.startsWith('xkeysib-')) {
+        throw new Error("Invalid API Key: USER_SMTP_PASS must start with 'xkeysib-'");
+    }
+
+    // 2. Validation
     if (!to || !type) {
         throw new Error("Missing required parameters: 'to' or 'type'");
     }
@@ -21,7 +26,7 @@ const sendEmailReminder = async ({ to, type, subscription }) => {
         throw new Error(`No template found for type: ${type}`);
     }
 
-    // Data Preparation
+    // 3. Data Preparation
     const mailInfo = {
         userName: subscription.user ? subscription.user.name : "Subscriber",
         subscriptionName: subscription.name,
@@ -35,18 +40,17 @@ const sendEmailReminder = async ({ to, type, subscription }) => {
     const message = template.generateBody(mailInfo);
     const subject = template.generateSubject(mailInfo);
 
-    // 3. Configure Email Object
-    const sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail();
-
-    sendSmtpEmail.subject = subject;
-    sendSmtpEmail.htmlContent = message;
-    sendSmtpEmail.sender = {
-        name: "Subscription Tracker",
-        email: "giftedmpho99@gmail.com", // MUST be verified in Brevo dashboard
+    // 4. Send Email (Using Plain Object Structure)
+    const sendSmtpEmail = {
+        sender: {
+            name: "Mpho Lebona",
+            email: "giftedmpho99@gmail.com", // Verified Sender
+        },
+        to: [{ email: to }],
+        subject: subject,
+        htmlContent: message,
     };
-    sendSmtpEmail.to = [{ email: to }]; // Dynamic recipient
 
-    // 4. Send Email
     try {
         const data = await apiInstance.sendTransacEmail(sendSmtpEmail);
         console.log(`Email sent successfully to ${to}. Message ID: ${data.messageId}`);
