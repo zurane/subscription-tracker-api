@@ -3,8 +3,7 @@ import { USER_SMTP_PASS, ADMIN_EMAIL } from "./env.js";
 
 
 const transporter = nodemailer.createTransport({
-    service: 'gmail',
-    host: "smtp.gmail.com",
+    host: "smtp.resend.com",
     port: 465,
     secure: true,
     auth: {
@@ -13,7 +12,6 @@ const transporter = nodemailer.createTransport({
     },
     logger: true, // Log information to console
     debug: true, // Include SMTP traffic in the logs
-    family: 4
 });
 
 export default transporter;
