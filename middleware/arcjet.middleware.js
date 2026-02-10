@@ -7,7 +7,9 @@ const arcjetMiddleware = async (req, res, next) => {
 
   try {
     // Arcjet expects (req, options)
-    const conclusionResult = await aj.protect(req, { requested: 1 });
+    const conclusionResult = await aj.protect(req, {
+       requested: 1,
+      });
     if (conclusionResult && conclusionResult.isDenied && conclusionResult.isDenied()) {
       if (
         conclusionResult.reason &&
