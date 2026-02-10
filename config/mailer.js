@@ -12,7 +12,8 @@ const transporter = nodemailer.createTransport({
         pass: USER_SMTP_PASS,
     },
     logger: true, // Log information to console
-    debug: true,  // Include SMTP traffic in the logs
+    debug: true, // Include SMTP traffic in the logs
+    family: 4
 });
 
 export default transporter;
