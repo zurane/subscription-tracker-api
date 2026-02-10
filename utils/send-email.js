@@ -1,27 +1,33 @@
 import dayjs from "dayjs";
 import { emailTemplates } from "./email-template.js";
-import { resend } from "../config/mailer.js";
+import SibApiV3Sdk from "sib-api-v3-sdk"; // Standard package name
+import { USER_SMTP_PASS } from "../config/env.js"; // This should be your Brevo API Key (xkeysib-...)
 
+// Initialize Brevo Client
+const client = SibApiV3Sdk.ApiClient.instance;
+const apiKey = client.authentications["api-key"];
+apiKey.apiKey = USER_SMTP_PASS;
 
+const apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
 
 const sendEmailReminder = async ({ to, type, subscription }) => {
-    //check if there it to and type value otherwise throw an error
-
+    // 1. Validation
     if (!to || !type) {
-        throw new Error("missing required parameters");
+        throw new Error("Missing required parameters: 'to' or 'type'");
     }
+
     const template = emailTemplates.find((t) => t.label === type);
-
     if (!template) {
-        throw new Error("No template found");
+        throw new Error(`No template found for type: ${type}`);
     }
 
+    // Data Preparation
     const mailInfo = {
-        userName: subscription.user.name,
+        userName: subscription.user ? subscription.user.name : "Subscriber",
         subscriptionName: subscription.name,
-        renewalDate: dayjs(subscription.renewalDate).format("MM/DD/YYYY"),
+        renewalDate: dayjs(subscription.renewalDate).format("MMM D, YYYY"),
         price: `${subscription.currency} ${subscription.price}`,
-        frequency: subscription.subscriptionFrequency,
+        frequency: subscription.frequency,
         status: subscription.status,
         paymentMethod: subscription.paymentMethod,
     };
@@ -29,21 +35,26 @@ const sendEmailReminder = async ({ to, type, subscription }) => {
     const message = template.generateBody(mailInfo);
     const subject = template.generateSubject(mailInfo);
 
-    // Send via Resend SDK
-    const response = await resend.emails.send({
-        from: 'Subscription Tracker <onboarding@resend.dev>',
-        to: to,
-        subject: subject,
-        html: message,
+    // 3. Configure Email Object
+    const sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail();
 
-    })
+    sendSmtpEmail.subject = subject;
+    sendSmtpEmail.htmlContent = message;
+    sendSmtpEmail.sender = {
+        name: "Subscription Tracker",
+        email: "giftedmpho99@gmail.com", // MUST be verified in Brevo dashboard
+    };
+    sendSmtpEmail.to = [{ email: to }]; // Dynamic recipient
 
-    if (response.error) {
-        console.error("Resend API Error:", response.error);
-        throw new Error(`Failed to send email: ${response.error.message}`);
+    // 4. Send Email
+    try {
+        const data = await apiInstance.sendTransacEmail(sendSmtpEmail);
+        console.log(`Email sent successfully to ${to}. Message ID: ${data.messageId}`);
+        return data;
+    } catch (error) {
+        console.error("Brevo Email Error:", error);
+        throw new Error(`Failed to send email: ${error.message}`);
     }
-
-    return response;
 };
 
 export default sendEmailReminder;
