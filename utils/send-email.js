@@ -1,7 +1,8 @@
 import dayjs from "dayjs";
 import { emailTemplates } from "./email-template.js";
-import transporter from "../config/mailer.js";
-import { ADMIN_EMAIL } from "../config/env.js";
+import { resend } from "../config/mailer.js";
+
+
 
 const sendEmailReminder = async ({ to, type, subscription }) => {
     //check if there it to and type value otherwise throw an error
@@ -28,18 +29,21 @@ const sendEmailReminder = async ({ to, type, subscription }) => {
     const message = template.generateBody(mailInfo);
     const subject = template.generateSubject(mailInfo);
 
-    const mailOptions = {
-        from: 'onboarding@resend.dev',
+    // Send via Resend SDK
+    const response = await resend.emails.send({
+        from: 'Subscription Tracker <onboarding@resend.dev>',
         to: to,
         subject: subject,
         html: message,
-        replyTo: 'giftedmpho99@gmail.com'
-    };
 
-    transporter.sendMail(mailOptions, (error, info) => {
-        if (error) return console.log(error);
-        res.status(200).json({ message: info.response });
-    });
+    })
+
+    if (response.error) {
+        console.error("Resend API Error:", response.error);
+        throw new Error(`Failed to send email: ${response.error.message}`);
+    }
+
+    return response;
 };
 
 export default sendEmailReminder;
