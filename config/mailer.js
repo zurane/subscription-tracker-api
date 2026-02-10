@@ -5,6 +5,7 @@ import { USER_SMTP_PASS, ADMIN_EMAIL } from "./env.js";
 const transporter = nodemailer.createTransport({
     service: 'gmail',
     host: "smtp.gmail.com",
+    port: 465,
     secure: true,
     auth: {
         user: ADMIN_EMAIL, // Avoid explicitly declaring the email in the codebase.
