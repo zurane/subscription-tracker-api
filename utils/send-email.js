@@ -12,6 +12,7 @@ const apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
 
 const sendEmailReminder = async ({ to, type, subscription }) => {
     // Safety Check: Ensure Key is loaded
+
     if (!USER_SMTP_PASS || !USER_SMTP_PASS.startsWith('xkeysib-')) {
         throw new Error("Invalid API Key: USER_SMTP_PASS must start with 'xkeysib-'");
     }
@@ -44,7 +45,7 @@ const sendEmailReminder = async ({ to, type, subscription }) => {
     const sendSmtpEmail = {
         sender: {
             name: "Mpho Lebona",
-            email: "giftedmpho99@gmail.com", // Verified Sender
+            email: "noreply@gtis.co.za", // Verified Sender
         },
         to: [{ email: to }],
         subject: subject,
