@@ -8,8 +8,10 @@ import errorMiddleware from "./middleware/error.middleware.js";
 import cookieParser from "cookie-parser";
 import arcjetMiddleware from "./middleware/arcjet.middleware.js";
 import workflowRouter from "./routes/workflow.routes.js";
+import cors from "cors";
 
 const app = express();
+app.use(cors()); // Enable CORS for all routes (you can configure it further as needed)
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false })); // Parse URL-encoded bodies like form submissions.
