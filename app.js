@@ -11,7 +11,12 @@ import workflowRouter from "./routes/workflow.routes.js";
 import cors from "cors";
 
 const app = express();
-app.use(cors()); // Enable CORS for all routes (you can configure it further as needed)
+app.use(cors({
+  origin: 'http://localhost:3000',
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept']
+})); // Enable CORS for all routes (you can configure it further as needed)
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false })); // Parse URL-encoded bodies like form submissions.
