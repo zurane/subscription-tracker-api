@@ -36,14 +36,9 @@ const subscriptionSchema = new mongoose.Schema(
       maxLength: 50,
       enum: [
         "entertainment",
-        "productivity",
-        "education",
-        "health",
-        "finance",
-        "lifestyle",
-        "technology",
-        "other",
       ],
+
+      default: "entertainment",
     },
 
     paymentMethod: {
