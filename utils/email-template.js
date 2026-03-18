@@ -1,4 +1,4 @@
-import logo from '../assets/venus_logo.svg'
+
 export const generateEmailTemplate = ({
     userName,
     subscriptionName,
@@ -24,7 +24,7 @@ export const generateEmailTemplate = ({
               border-bottom:1px solid rgba(255,255,255,0.06);">
 
               <p style="margin:0 0 12px; font-size:34px; line-height:38px; font-weight:800; color:#ffffff; letter-spacing:-1px;">
-                ${logo}
+                Venus +
               </p>
 
               <p style="margin:0 auto 15px; display:inline-block; font-size:12px; line-height:12px; color:#9fb4ff; background-color:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.08); border-radius:999px; padding:8px 14px;">
