@@ -1,3 +1,4 @@
+import logo from '../assets/venus_logo.svg'
 export const generateEmailTemplate = ({
     userName,
     subscriptionName,
@@ -23,10 +24,10 @@ export const generateEmailTemplate = ({
               border-bottom:1px solid rgba(255,255,255,0.06);">
 
               <p style="margin:0 0 12px; font-size:34px; line-height:38px; font-weight:800; color:#ffffff; letter-spacing:-1px;">
-                SubDub
+                ${logo}
               </p>
 
-              <p style="margin:0 auto 16px; display:inline-block; font-size:12px; line-height:12px; color:#9fb4ff; background-color:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.08); border-radius:999px; padding:8px 14px;">
+              <p style="margin:0 auto 15px; display:inline-block; font-size:12px; line-height:12px; color:#9fb4ff; background-color:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.08); border-radius:999px; padding:8px 14px;">
                 Subscription renewal reminder
               </p>
 
@@ -100,14 +101,14 @@ export const generateEmailTemplate = ({
 
               <p style="font-size:15px; line-height:25px; margin:0 0 24px; color:#94a0bf;">
                 Best regards,<br>
-                <strong style="color:#ffffff;">The SubDub Team</strong>
+                <strong style="color:#ffffff;">The Venus Team</strong>
               </p>
             </td>
           </tr>
           <tr>
             <td style="padding:22px 30px 28px; border-top:1px solid rgba(255,255,255,0.06); text-align:center; background-color:rgba(255,255,255,0.02);">
               <p style="margin:0 0 10px; font-size:13px; line-height:22px; color:#7f8baa;">
-                SubDub Inc. | 123 Main St, Anytown, AN 12345
+                Venus Plus Inc. | 123 Main St, Anytown, AN 12345
               </p>
               <p style="margin:0; font-size:13px; line-height:22px;">
                 <a href="#" style="color:#7ea8ff; text-decoration:none; margin:0 8px;">Unsubscribe</a>
