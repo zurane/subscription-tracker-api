@@ -152,7 +152,6 @@ const updateById = async (req, res, next) => {
 const deleteById = async (req, res, next) => {
   try {
     const id = req.params.id;
-
     // Check subscription exists and user owns it
     const subscription = await Subscription.findById(id);
     if (!subscription) {
