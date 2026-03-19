@@ -11,8 +11,12 @@ import workflowRouter from "./routes/workflow.routes.js";
 import cors from "cors";
 
 const app = express();
+const allowedOrigins = [
+  "http://localhost:3000", // Keep this for your own local testing
+  "https://venus-c6ay.onrender.com/" // Add your live URL here
+];
 app.use(cors({
-  origin: "http://localhost:3000",
+  origin: allowedOrigins,
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept']
